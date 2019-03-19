@@ -40,7 +40,7 @@ height:0 !important;
   display:flex;
   align-items:center;
   justify-content:center;
-  min-width:135px;
+  min-width:var(--tabwidth);
   cursor:pointer;
   text-transform:uppercase;
   font-size:14px;
@@ -50,7 +50,7 @@ height:0 !important;
   position:absolute;
   bottom:0px;
   height:2px;
-  width:135px;
+  width:var(--tabwidth);
   background:white;
   transition:.5s ease;
 }
@@ -76,15 +76,15 @@ height:0 !important;
 #app{
   margin:0 auto;
   text-align:center;
- // width:820px;
  }
 
 
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,500,300italic,500italic,700italic,900,300);
 body{
-      font-family: "Roboto", Helvetica, sans-serif;
+    font-family: "Roboto", Helvetica, sans-serif;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+    margin:0;
 }
 </style>
 
@@ -94,7 +94,7 @@ body{
   <body>
    <div id="app">
 
-    <div class="tabs">
+    <div class="tabs" ref="tabbar">
       <div class="tabitem"  v-for="(tab, index) in items" @click="switchtab(index)" :key="index" ref="tab">{{tab}}</div>
       <div class="slider" :style="'transform:translateX('+activetab*tabwidth+'px)'"></div>
     </div>
@@ -109,7 +109,6 @@ body{
    
 </div>
 
-    <!-- Start running your app -->
     <script>
       window.app = new Vue({
        el:'#app',
@@ -119,12 +118,14 @@ body{
       activetab: 0,
       tabwidth: 135,
       items:['Google', 'Apple', 'Microsoft', 'Samsung', 'Nokia', 'Sony', 'Vivo', 'Oneplus', 'Oppo', 'LG', 'Blackberry'],
-touch:{sx:null, sy: null, st:null, ex:null, ey:null, et:null}
-       
+      touch:{sx:null, sy: null, st:null, ex:null, ey:null, et:null}     
     }
   },
-  methods: {
-    switchtab(n){
+ mounted(){
+  this.$refs.tabbar.style.setProperty('--tabwidth', this.tabwidth+'px')
+ },
+ methods: {
+   switchtab(n){
       let scroll, scond
       if(this.activetab>n){
         this.transition = "slide-prev"
@@ -141,39 +142,37 @@ touch:{sx:null, sy: null, st:null, ex:null, ey:null, et:null}
          this.activetab = n
        })
     },
-    start(e){
-   this.settouchpos(e, 'start') 
-       
-}, 
-move(e){
+ start(e){
+   this.settouchpos(e, 'start')       
+  }, 
+ move(e){
   this.settouchpos(e, 'move')  
-},
-end(e){
+  },
+ end(e){
   this.settouchpos(e, 'end') 
   let dx = this.touch.sx - this.touch.ex,
       dy = this.touch.sy - this.touch.ey,
       dt = this.touch.et - this.touch.st,
       dir = Math.sign(dx),
       ntab = this.activetab+dir,
-      vmove =  Math.abs(dx) / Math.abs(dy) < Math.sqrt(4)
-  
+      vmove =  Math.abs(dx) / Math.abs(dy) < Math.sqrt(4) 
      ntab = ntab >=0 && ntab<this.items.length ? ntab : null
    if(Math.abs(dx)>10 && ntab !==null && !vmove && dt<300)      this.switchtab(ntab)
-},
-settouchpos(e, event){
+  },
+ settouchpos(e, event){
      let ev = e.changedTouches ? e.changedTouches[0] : e
-  if(event === 'start'){
+   if(event === 'start'){
     this.touch.sx = ev.clientX
     this.touch.sy = ev.clientY
     this.touch.st = Date.now()
-  }else{
+   }else{
     this.touch.ex = ev.clientX
     this.touch.ey = ev.clientY
     this.touch.et = Date.now()
   }
-}
   }
-      })
+ }
+})
     </script>
   </body>
 </html>
