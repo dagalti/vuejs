@@ -8,7 +8,7 @@
 
     <title>Vue Swipe Tabs</title>
 
-     <syle>
+     <style>
 .slide-next-leave-active, .slide-next-enter-active, .slide-prev-enter-active, .slide-prev-leave-active {
   transition: .5s;
 }
@@ -128,11 +128,11 @@ touch:{sx:null, sy: null, st:null, ex:null, ey:null, et:null}
       let scroll, scond
       if(this.activetab>n){
         this.transition = "slide-prev"
-         scroll = n-2
+         scroll = n-1
         if(scond)this.$refs.tab[scroll].scrollIntoView({behavior:'smooth'})
       }else  if(this.activetab<n){
          this.transition = "slide-next"
-         scroll = n+2
+         scroll = n+1
       }
       scond = scroll>=0 && scroll < this.items.length
       if(scond)this.$refs.tab[scroll].scrollIntoView({behavior:'smooth'})
